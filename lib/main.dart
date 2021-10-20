@@ -3,7 +3,11 @@ import 'package:weather_app/screens/loading_screen.dart';
 
 
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
