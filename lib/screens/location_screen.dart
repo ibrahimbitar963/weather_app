@@ -1,16 +1,37 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:weather_app/services/weather.dart';
 import 'package:weather_app/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
   LocationScreen({this.locationwethar});
-
   var locationwethar;
+  
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
-
 class _LocationScreenState extends State<LocationScreen> {
+  WeatherModel weather=WeatherModel();
+  int? temperature;
+  String? weatherIcon;
+  String? weatherTemp;
+  String? cityname;
 
+  @override
+  void initState() {
+    updateUI(widget.locationwethar);
+  }
+  void updateUI(dynamic weatherData){
+    setState(() {
+      double temp =weatherData['main']['temp'];
+      temperature=temp.toInt();
+      var condition  =weatherData['weather'][0]['id'];
+      cityname = weatherData['name'];
+      weatherIcon= weather.getWeatherIcon(condition!);
+      weatherTemp=weather.getMessage(temperature!);
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,11 +74,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temperature°',
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '☀️',
+                      weatherIcon!,
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -66,7 +87,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "It's 🍦 time in San Francisco!",
+                  "$weatherTemp in $cityname!",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -79,5 +100,4 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 }
 
-// var long=jsonDecode(data)['coord']['lon'];
-// var weatherdescrep =  jsonDecode(data)['weather'][0]['description'];
+

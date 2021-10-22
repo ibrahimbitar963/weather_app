@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:weather_app/services/weather.dart';
 import 'location_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,8 +16,7 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  double? lat;
-  double? long;
+
   @override
   void initState() {
     print('app started');
@@ -27,16 +26,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
   void getLocationData() async {
     Location location = Location();
     await location.getCurrentLocation();
-    long = location.longitude;
-    lat = location.latitude;
-    NetworkHelper networkHelper = NetworkHelper(
-        'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$long&appid=$APIKey');
-    print(lat);
-    print(long);
 
+    NetworkHelper networkHelper = NetworkHelper(
+'https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon='
+    '${location.longitude}&appid=$APIKey&units=metric');
     var weatherData = await networkHelper.getData();
+    print(weatherData);
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return LocationScreen();
+      return LocationScreen(locationwethar: weatherData,);
     }));
   }
 
